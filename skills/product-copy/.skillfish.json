@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "product-copy",
+  "owner": "propane-ai",
+  "repo": "kits",
+  "path": "plugins/design/skills/product-copy",
+  "branch": "main",
+  "sha": "c56a28e496bafdbc7ce8543b7e29b04c5c9e3d88",
+  "source": "manual"
+}
