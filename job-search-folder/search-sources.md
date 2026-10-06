@@ -109,16 +109,64 @@ Add entries as: `Source | URL | What it's good for | Date added | Yield note`
 
 Only append. Do not edit the tiers above unless I ask.
 
-(none yet)
+LinkedIn guest search API | `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=..&location=..&f_TPR=r86400&start=0` (detail: `/jobs-guest/jobs/api/jobPosting/<id>`) | Public, no login. About 20 listings per query with company, location and LinkedIn date. Fastest freshness pass; detail endpoint returns the JD and experience level | 2026-10-06 | Highest discovery volume, but LinkedIn dates are often reposts and roughly half the shortlisted roles were not on the company's own board. Always verify on the company page. Rate limit: 429 after about 10 fast requests, so pace at about 3 s apart.
+Ashby posting API with pay | `https://api.ashbyhq.com/posting-api/job-board/<slug>?includeCompensation=true` | `publishedAt`, location, workplaceType and salary tier in one call. Best source of date truth. Slugs are often hyphenated (`coram-ai`, not `coramai`) | 2026-10-06 | High. Corrected 5 LinkedIn "this week" dates to 49-108 days.
+Greenhouse job detail | `https://boards-api.greenhouse.io/v1/boards/<slug>/jobs/<id>` | Full JD plus `first_published`. Some Indian companies use odd slugs (`razorpaysoftwareprivatelimited`, `envoyglobalinc`). EU boards (`boards-api.eu.greenhouse.io`) return 502 through this environment's proxy; read the `job-boards.eu.greenhouse.io/<slug>` page instead | 2026-10-06 | High for date and JD.
+Playwright Chromium (browser method) | `require('/opt/node22/lib/node_modules/playwright')`, `executablePath: '/opt/pw-browsers/chromium'`, `--no-sandbox` | Renders JS career pages (Pinpoint, Keka, Phenom, Zoho, custom). Read page text and anchor hrefs, no login | 2026-10-06 | Works. Needed for Lyzr, Jupiter, Runable, Codewalla, athenahealth.
+Phenom career sites | e.g. `careers.athenahealth.com/us/en/job/<req>` | JSON-LD `datePosted` readable with plain curl | 2026-10-06 | Good for company date.
+SmartRecruiters posting API | `https://api.smartrecruiters.com/v1/companies/<CompanyId>/postings/<postingId>` | `releasedDate`, location, full JD. The cross-company search endpoint returns 404 | 2026-10-06 | Good once the posting id is known (e.g. Nielsen).
+YC jobs pages | `ycombinator.com/jobs/location/india`, `/jobs/role/designer`, `/companies/<slug>/jobs` | Embedded `data-page` JSON gives minExperience, visa, salaryRange, relative createdAt. Works with curl | 2026-10-06 | Medium. Most India YC design roles were over 90 days old.
+Keka board detection | `https://<slug>.keka.com/careers/` | 200 means the board exists, 302 means it does not. Render with Playwright to list roles (Jupiter, Skydo, Truemeds, Signzy, Niyo, Mintifi are on Keka) | 2026-10-06 | Good for confirming a role is or is not on an Indian company's own board.
+Wellfound role pages | `wellfound.com/role/l/product-designer/<city>` | Readable through WebFetch (curl gets 403): company, salary, experience, relative age | 2026-10-06 | Medium. Ages are repost-prone.
+Peak XV portfolio board | `careers.peakxv.com/jobs/<company>` | Portfolio jobs board (Consider platform). Job list did not render through fetch; try Playwright | 2026-10-06 | Untested with a browser.
 
 ## Discovered companies (Cowork maintains this section)
 
 Add entries as: `Company | Careers URL | Domain | How found | Date added | Design roles seen`
 
-(none yet)
+Lyzr AI | https://careers.lyzr.ai/ | Enterprise AI agents | LinkedIn India search | 2026-10-06 | Product Designer (UI/UX), Bengaluru, 2-4 yrs (verified, 2026-09-15)
+athenahealth India | https://careers.athenahealth.com/us/en/c/product-ux-jobs | Healthcare software GCC (Bengaluru) | LinkedIn India search | 2026-10-06 | UX Designer (2-4 yrs) (verified); also Lead UX Designer, Lead UX Design Researcher
+StarRez | https://job-boards.greenhouse.io/starrez | Student-housing SaaS (Hyderabad) | LinkedIn India search | 2026-10-06 | Product Designer, Hyderabad, 5+ yrs
+Envoy Global | https://job-boards.greenhouse.io/envoyglobalinc | Immigration SaaS (Hyderabad) | LinkedIn India search | 2026-10-06 | Product Designer, Hyderabad, 2-4 yrs
+Bjak | https://jobs.ashbyhq.com/bjakcareer | Insurance and fintech (SEA, India postings) | Ashby site: search | 2026-10-06 | Product Designer (UI/UX) and UI Designer - AI Neobank, India; board has 3,000+ roles, many per-country duplicates
+AiPrise | https://jobs.ashbyhq.com/aiprise | KYB / KYC / AML compliance AI (YC S22) | YC jobs, Ashby search | 2026-10-06 | Product Designer II, Bengaluru, INR 25-35L (2026-08-10, stale)
+Ema | https://jobs.ashbyhq.com/ema | Agentic AI employees (Bengaluru) | Ashby site: search | 2026-10-06 | Product designer (2026-07-24, stale)
+Atlys | https://jobs.ashbyhq.com/atlys | AI-first visa / travel (Delhi) | Wellfound | 2026-10-06 | Product Designer (2026-07-31, stale)
+Tekion | https://jobs.ashbyhq.com/tekion | Automotive enterprise software (Bengaluru, Chennai) | LinkedIn India search | 2026-10-06 | Product Designer II (2026-08-14, stale); Senior roles
+Coram AI | https://jobs.ashbyhq.com/coram-ai | AI video security (Bangalore) | LinkedIn India search | 2026-10-06 | Product Designer, 5+ yrs (2026-08-18, stale)
+Nielsen India | https://careers.smartrecruiters.com/TheNielsenCompany | Media data products GCC (Bengaluru) | LinkedIn India search | 2026-10-06 | Product Designer II (2026-09-02, stale)
+Deepgram | https://jobs.ashbyhq.com/deepgram | Voice AI developer platform (US remote) | Ashby feed scan | 2026-10-06 | Product Designer II (US remote, visa unclear)
+Cardboard | https://jobs.ashbyhq.com/cardboard | AI video editor (YC W26, Bengaluru / SF) | YC jobs | 2026-10-06 | Founding Designer (2026-06-20, over 90 days)
+Jupiter | https://jupiter.keka.com/careers | Neobank (Keka board) | LinkedIn India search | 2026-10-06 | None on the Keka board (LinkedIn listing not on the board)
+Skydo | https://skydo.keka.com/careers/ | Cross-border payments for exporters (Keka) | LinkedIn India search | 2026-10-06 | None on the Keka board
+Signzy / Niyo / Mintifi / Truemeds | https://<slug>.keka.com/careers/ | Fintech / health on Keka | Keka board probe | 2026-10-06 | Niyo: Visual Designer only (137 days); others none
+Stack Wealth | https://stackwealth.in/careers/jobs | AI wealth advisor (YC) | LinkedIn India search | 2026-10-06 | Page says no jobs currently available
+EnKash | https://www.enkash.com/careers | Spend-management fintech (Mumbai / Pune) | LinkedIn India search | 2026-10-06 | UI/UX Designer (AI-Native), unverified
+Leadrat | https://leadrat.com/careers | Real-estate AI CRM (Hyderabad) | LinkedIn India search | 2026-10-06 | Product Designer 4-8 yrs, unverified
+Ionic Wealth | https://www.ionicwealth.com/careers | Wealth platform (Bengaluru) | LinkedIn India search | 2026-10-06 | Product Designer 3-5 yrs, unverified
+XenonStack | https://talent.xenonstack.com/jobs/Careers | Agentic AI foundry (Zoho Recruit board) | LinkedIn India search | 2026-10-06 | Product Designer - AI Experiences, not on the Zoho board
+iDream Education (iPrep) | https://www.idreameducation.org/ | Edtech (Gurgaon) | LinkedIn India search | 2026-10-06 | Product Designer 1-3 yrs, unverified
+Codewalla | https://www.codewalla.com/jobs | AI-native product studio (Chennai) | Web search | 2026-10-06 | Product Designer on LinkedIn only; company jobs page lists engineering roles only
+Runable | https://runable.com/careers | SMB AI platform (Bangalore) | LinkedIn India search | 2026-10-06 | Product Designer on LinkedIn only; careers page lists engineering roles
+Nava | (none found) | AI-native GPU cloud (Bengaluru) | LinkedIn India search | 2026-10-06 | Product Designer 3-8 yrs, unverified
+Candescent | (Workday / own site, not located) | Digital banking software (Bengaluru) | LinkedIn batch 2 | 2026-10-06 | Product Designer - Fi Admin (6+ yrs); Product Designer - Design Systems (4-6 yrs)
+ABCD (Aditya Birla Capital Digital) | (not located) | Financial services digital (Maharashtra) | LinkedIn batch 2 | 2026-10-06 | Product Designer; Associate Product Designer (manager-leaning text)
+Ionic / Seismic / JazzX AI / Emergent / MaxIQ (Gyaan) / GreytHR / Cornerstone OnDemand / Guidewire / Thermo Fisher | (not located) | B2B SaaS and AI in India | LinkedIn batches | 2026-10-06 | Mostly 4+ yrs or senior; Cornerstone 2-5 yrs (INR 6-10L estimate)
+Moniepoint | https://job-boards.eu.greenhouse.io/moniepoint | African fintech with India-remote design roles | Greenhouse scan | 2026-10-06 | Staff Product Designer, Remote India (2026-08-27, staff level)
+Peak XV Surge portfolio, Inc42 / Entrackr / Tracxn funding lists | see Tier 1 | Discovery lists | Web search | 2026-10-06 | Arivihan (AI edtech, Series A, Indore), Seeds Fincap, Linux Laboratories surfaced as funded; no design roles checked yet
 
 ## Low-yield sources (Cowork maintains this section)
 
 Add entries as: `Source | Why it's low-yield | Date`
 
-(none yet)
+Cutshort | Dominated by recruiter listings (Staffnixcom, Talent Pro, Gravity, Peak Hire) with hidden employers and "Tier 1 design institute only" rules; named-company roles were mostly stale | 2026-10-06
+Instahyre | Curl returns 403; Google results were mostly old or closed listings | 2026-10-06
+Indeed India | Returns 401 to logged-out fetch | 2026-10-06
+Glassdoor, Behance, Himalayas, startup.jobs, WeWorkRemotely | 403 to logged-out fetch | 2026-10-06
+Naukri, Foundit | Pages are JS shells with no listing text through fetch; `site:naukri.com/job-listings` returned no job pages | 2026-10-06
+Hirect, Designer Hangout, UX Jobs Board | Unreachable or board unavailable | 2026-10-06
+Otta / Welcome to the Jungle | Login wall | 2026-10-06
+Workable jobs API | 429 rate limit; `site:apply.workable.com` returned mostly non-India or agencies | 2026-10-06
+Google `site:` for Darwinbox, Keka, Freshteam, Zoho Recruit | Darwinbox: no hits. Keka: only marketing pages. Freshteam / Zoho: small companies and agencies, no Indian product-company design roles | 2026-10-06
+YC India design roles | Nearly all over 90 days old (only AiPrise within range) | 2026-10-06
+LinkedIn as a date source | Dates shift on repost (Tekion, Coram, StarRez, Envoy, Cardboard, Ema, Atlys); use only to discover, never to date | 2026-10-06
